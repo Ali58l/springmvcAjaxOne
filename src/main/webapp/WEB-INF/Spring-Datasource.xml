@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<context:annotation-config/> 
+	<mvc:annotation-driven/>
+	
+	<context:component-scan base-package="controller" />
+	
+	<bean id="customerDAO" class="dbQuery.JdbcCustomerDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="frameController" class="controller.FrameController">
+			<property name="frameService" ref="frameService" />
+			<property name="pages" >
+				<list>
+					<value>1</value>
+					<value>2</value>
+					<value>3</value>
+				</list>
+		</property>	
+	</bean>
+	
+	<bean id="frameService" class="service.FrameService">
+			<property name="customerDAO" ref="customerDAO" />	
+			<property name="usersQuery" value="SELECT * FROM users;" />
+			<property name="usersIdQuery" value="SELECT id FROM users;" />
+			<property name="jdbcTemplate" ref="framejdbc" />
+	</bean>
+	
+	<bean id="framejdbc"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/mydb1" />
+		<property name="username" value="root" />
+		<property name="password" value="123" />
+	</bean>	
+	
+</beans>
